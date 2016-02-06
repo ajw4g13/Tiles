@@ -17,7 +17,9 @@ ilx, ily, tunits = float(input("Width of tile: ")), float(input("Length of tile:
                                           # and height of the tiles, with units
                                           # tunits.
 
-for i in range(6):
+lx, ly, Lx, Ly = 0, 0, 0, 0
+
+for i in range(len(allowed_units)/4):
     if tunits == allowed_units[4*i] or tunits == allowed_units[4*i + 1] or tunits == allowed_units[4*i + 2]:
         lx, ly = allowed_units[4*i + 3] * ilx, allowed_units[4*i + 3] * ily
 
@@ -28,6 +30,9 @@ for i in range(6):
                                           # values for the length and width of
                                           # the tile, lx and ly, in millimetres.
 
+if lx == 0 or ly == 0:
+    sys.exit('Invalid dimensions or units entered.')
+
 iLx, iLy, runits = float(input("Width of room: ")), float(input("Length of room: ")), raw_input("type units: ")
 
 for i in range(6):
@@ -35,6 +40,10 @@ for i in range(6):
         Lx, Ly = allowed_units[4*i + 3] * iLx, allowed_units[4*i + 3] * iLy                                                                           
 
                                           # Repeat of above, for room.
+
+if Lx == 0 or Ly == 0:
+    sys.exit('Invalid dimensions or units entered.')
+
 
 ## This section takes the x and y dimensions in millimetres, and gives the
 ## number of tiles needed in both directions, along with the total number of
@@ -78,7 +87,6 @@ Ry = 0.5*(Ly-(ny*ly))
 
 print (" ")    
 
-print N, 'tiles needed'
 
 ## This section uses the inputted x and y dimensions for the room and tile
 ## to give an image of the tiled room.
@@ -145,12 +153,35 @@ for i in range(nx + 1):
                                           # Creates black lines at intervals,
                                           # representing the tiles.
 
-print lx, ly, rx, ry
-
 img = Image.frombuffer('RGBA',(X,Y),rimg,'raw','RGBA',0,1)
 
 img.save("room_layout.png","PNG")
 
 img.show()
+
+print N, 'tiles needed'
+
+print ' '
+
+print 'The side tiles (green) will be', ilx*(Rx/lx), tunits, 'by', ily, tunits
+
+print 'The side tiles (blue) will be', ilx, tunits, 'by', ily*(Ry/ly), tunits
+
+print 'The corner tiles (red) will be', ilx*(Rx/lx), tunits, 'by', ily*(Ry/ly), tunits, '.'
+
+print ' '
+
+if (nx % 2 != 0) and (ny % 2 != 0):
+    print "In order to lay your floor, mark the centre point of the room. Place a tile so that it's centre lines up with the centre of the centre of the room. Then place your tiles so that they all line up with this central tile." 
+elif (nx % 2 == 0) and (ny % 2 == 0):
+    print "In order to lay your floor, mark the centre point of the room. Place four tiles so that each has a corner on the centre point of the room. Then place your tiles so that they all line up with these central tiles." 
+elif (nx % 2 != 0) and (ny % 2 == 0) and Lx < Ly:
+    print "In order to lay your floor, mark the centre point of the room. Place a tile either side of the point so that the tiles line up with the long side of the room. Then place your tiles so that they all line up with this central tile." 
+elif (nx % 2 == 0) and (ny % 2 != 0) and Lx > Ly:
+    print "In order to lay your floor, mark the centre point of the room. Place a tile either side of the point so that the tiles line up with the long side of the room. Then place your tiles so that they all line up with this central tile." 
+elif (nx % 2 != 0) and (ny % 2 == 0) and Lx > Ly:
+    print "In order to lay your floor, mark the centre point of the room. Place a tile either side of the point so that the tiles line up with the long side of the room. Then place your tiles so that they all line up with this central tile." 
+elif (nx % 2 == 0) and (ny % 2 != 0) and Lx < Ly:
+    print "In order to lay your floor, mark the centre point of the room. Place a tile either side of the point so that the tiles line up with the long side of the room. Then place your tiles so that they all line up with this central tile." 
 
 raw_input("press enter to exit")
