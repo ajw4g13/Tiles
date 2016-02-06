@@ -5,59 +5,50 @@
     ### room optimally. It then outputs 
 
 
-## This section uses the inputted x and y dimensions for the room and tile
-## to give the number of tiles required for the optimal layout, in a
-## rectangular room.
+## This section takes inputted x and y dimensions for the room and tile and
+## gives the x and y dimensions in millimetres.
 
 import sys
 
-Lx, Ly, runits = float(input("Dimensions of room: ")), float(input("by: ")), raw_input("type metres or feet: ")
-                                          # Input dimensions of room.
+allowed_units = ['metre', 'metres', 'm', 1000.0, 'centimetre', 'centimetres', 'cm', 10.0, 'milimetre', 'milimetres', 'mm', 1.0, 'yard', 'yards', 'yd', 914.4, 'foot', 'feet', 'ft', 304.8, 'inch', 'inches', 'in', 25.4]
 
-if runits == 'metres' or runits == 'feet':
-    print " "
-else:
-    sys.exit("Type allowed units")
-                                          # Breaks if invalid units are inputted.
-    
-lx, ly, tunits = float(input("Dimensions of tile: ")), float(input("by: ")), raw_input("type centimetres or inches: ") 
-                                          # Input dimensions of tile.
-if tunits == 'centimetres' or tunits == 'inches':
-    print " "
-else:
-    sys.exit("Type allowed units")
-                                          # Breaks if invalid units are inputted.
-    
-if runits == 'metres' and tunits == 'centimetres':
-    lx = 0.01 * lx    
-    ly = 0.01 * ly    
-    funits = 'metres'
-elif runits == 'feet' and tunits == 'inches':
-    lx = 0.08384 * lx    
-    ly = 0.08384 * ly    
-    funits = 'feet'
-elif runits == 'metres' and tunits == 'inches':
-    lx = 0.0254 * lx    
-    ly = 0.0254 * ly
-    funits = 'metres'
-elif runits == 'feet' and tunits == 'centimetres':
-    lx = 0.03281 * lx    
-    ly = 0.03281 * ly
-    funits = 'feet'
+ilx, ily, tunits = float(input("Width of tile: ")), float(input("Length of tile: ")), raw_input("type units: ")
+                                          # ilx and ily is the inputted width 
+                                          # and height of the tiles, with units
+                                          # tunits.
 
-                                          # Converts the dimensions of the tile
-                                          # into those of the room, and then 
-                                          # defines funits to be the units with
-                                          # which we work with henceforth.
+for i in range(6):
+    if tunits == allowed_units[4*i] or tunits == allowed_units[4*i + 1] or tunits == allowed_units[4*i + 2]:
+        lx, ly = allowed_units[4*i + 3] * ilx, allowed_units[4*i + 3] * ily
 
-nxa = int(Lx / lx - 1)
-nya = int(Ly / ly - 1)                    # Number of tiles needed in x 
-                                          # and y directions.
+                                          # This code assigns the units that
+                                          # final tile measurements are given
+                                          # in, based on inputted tile units, 
+                                          # while simultaneously defining new
+                                          # values for the length and width of
+                                          # the tile, lx and ly, in millimetres.
+
+iLx, iLy, runits = float(input("Width of room: ")), float(input("Length of room: ")), raw_input("type units: ")
+
+for i in range(6):
+    if runits == allowed_units[4*i] or runits == allowed_units[4*i + 1] or runits == allowed_units[4*i + 2]:
+        Lx, Ly = allowed_units[4*i + 3] * iLx, allowed_units[4*i + 3] * iLy                                                                           
+
+                                          # Repeat of above, for room.
+
+## This section takes the x and y dimensions in millimetres, and gives the
+## number of tiles needed in both directions, along with the total number of
+## tiles needed, for both alignments. It then gives the dimensions for the
+## side tiles, in millimetres.
+
+nxa = int(Lx / lx - 1.0)
+nya = int(Ly / ly - 1.0)                  # Number of tiles needed in x and y
+                                          # directions.
 
 Na = (nxa + 2) * (nya + 2)                # Total number of tiles needed.
 
-nxb = int(Lx / ly - 1)
-nyb = int(Ly / lx - 1)
+nxb = int(Lx / ly - 1.0)
+nyb = int(Ly / lx - 1.0)
     
 Nb = int(nxb + 2.0) * int(nyb + 2.0)      # Repeat for opposite alignment
                                           # of tiles.
@@ -79,6 +70,12 @@ else:
                                           # needed in each direction are 
                                           # defined as nx and ny.
 
+Rx = 0.5*(Lx-(nx*lx))
+
+Ry = 0.5*(Ly-(ny*ly))
+                                          # Remainder of tiles in millimetres
+                                          # (float).
+
 print (" ")    
 
 print N, 'tiles needed'
@@ -90,23 +87,14 @@ from PIL import Image
 
 import numpy as np
 
-X, Y, x, y = int(round(100*Lx)), int(round(100*Ly)), int(round(100*lx)), int(round(100*ly))
-                                          # Images require an integer number of
-                                          # pixels, since I want the number of
-                                          # pixels to be proportional to the 
-                                          # size of the room, I am defining 
-                                          # these new numbers to be the
-                                          # dimensions of the room and tile, 
-                                          # but with units of 'pixels' instead  
-                                          # of metres.
+X, Y, x, y, rx, ry = int(round(Lx)), int(round(Ly)), int(round(lx)), int(round(ly)), int(round(Rx)), int(round(Ry))
+                                          # Returns integer values for all the
+                                          # lengths in previous section, in  
+                                          # order to assign pixels.
 
-rx = int(0.5*(X-(nx*x)))
-
-ry = int(0.5*(Y-(ny*y)))
-
-                            
 rimg = np.empty((X,Y),np.uint32)          # Uses the room dimensions to create
-                                          # an empty array.
+                                          # an empty array, to be used for the
+                                          # room image.
 
 rimg.shape=Y,X                            # Sets the size of the array to be
                                           # X by Y.
@@ -130,39 +118,39 @@ rimg[(Y-ry):Y,rx:(X-rx)]=0xFFFF0000
 
 rimg[0:ry,0:rx]=0xFF0000FF
 
-rimg[0:ry,(X-rx):X]=0xFF0000FF
+rimg[0:ry,(X-rx):X]=0xFF0000FF                                         
 
 rimg[(Y-ry):Y,0:rx]=0xFF0000FF
 
 rimg[(Y-ry):Y,(X-rx):X]=0xFF0000FF
+                                          # Creates coloured tiles around edges
+                                          # of the image.
 
-rimg[0:2, 0:X] = 0xFF000000
 
-rimg[(Y-2):Y, 0:X] = 0xFF000000
+rimg[0:9, 0:X] = 0xFF000000
+
+rimg[(Y-9):Y, 0:X] = 0xFF000000
+
+rimg[0:Y, 0:9] = 0xFF000000
+
+rimg[0:Y, (X-9):X] = 0xFF000000
+                                          # Creates a black border around the 
+                                          # image.
 
 for i in range(ny + 1):
-    rimg[(ry + y*i):(ry + y*i) + 1, 0:X] = 0xFF000000
-
-rimg[0:Y, 0:2] = 0xFF000000
-
-rimg[0:Y, (X-2):X] = 0xFF000000
+    rimg[((ry + y*i) - 4):((ry + y*i) + 5), 0:X] = 0xFF000000
 
 for i in range(nx + 1):
     rimg[0:Y, (rx + x*i):(rx + x*i) + 1] = 0xFF000000
+                                          # Creates black lines at intervals,
+                                          # representing the tiles.
+
+print lx, ly, rx, ry
 
 img = Image.frombuffer('RGBA',(X,Y),rimg,'raw','RGBA',0,1)
 
+img.save("room_layout.png","PNG")
+
 img.show()
 
-
-from colorama import *
-
-print (Style.BRIGHT)
-
-print (Fore.BLUE + str(x)), 'by', ry, funits
-
-print (Fore.GREEN + str(rx)), 'by', y, funits
-
-print (Fore.RED + str(rx)), 'by', ry, funits
-
-sys.exit()
+raw_input("press enter to exit")
