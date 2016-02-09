@@ -2,7 +2,8 @@
 
     ### This code uses inputted dimensions for a rectangular room and a
     ### rectangular tile, and outputs the number of tiles needed to tile the
-    ### room optimally. It then outputs 
+    ### room optimally. It then outputs instructions on how to tile your room,
+    ### a diagram of the final room, the number of tiles needed etc...
 
 
 ## This section takes inputted x and y dimensions for the room and tile and
@@ -180,8 +181,8 @@ elif (nx % 2 != 0) and (ny % 2 == 0) and Lx < Ly:
 elif (nx % 2 == 0) and (ny % 2 != 0) and Lx > Ly:
     print "In order to lay your floor, mark the centre point of the room. Place a tile either side of the point so that the tiles line up with the long side of the room. Then place your tiles so that they all line up with this central tile." 
 elif (nx % 2 != 0) and (ny % 2 == 0) and Lx > Ly:
-    print "In order to lay your floor, mark the centre point of the room. Place a tile either side of the point so that the tiles line up with the long side of the room. Then place your tiles so that they all line up with this central tile." 
+    print "In order to lay your floor, mark the centre point of the room. Place a tile either side of the point so that the tiles line up with the short side of the room. Then place your tiles so that they all line up with this central tile." 
 elif (nx % 2 == 0) and (ny % 2 != 0) and Lx < Ly:
-    print "In order to lay your floor, mark the centre point of the room. Place a tile either side of the point so that the tiles line up with the long side of the room. Then place your tiles so that they all line up with this central tile." 
+    print "In order to lay your floor, mark the centre point of the room. Place a tile either side of the point so that the tiles line up with the short side of the room. Then place your tiles so that they all line up with this central tile." 
 
 raw_input("press enter to exit")
